@@ -1,0 +1,133 @@
+import type { Collection, CollectionItem } from "@/types/collection";
+
+export const DUMMY_COLLECTIONS: Collection[] = [
+  {
+    id: "col_1",
+    name: "Kenya Business Finance Directory",
+    description: "Financial services and lending companies operating in Kenya.",
+    category: "finance",
+    itemCount: 5,
+    createdAt: "2026-03-20T07:00:00Z",
+    updatedAt: "2026-04-09T07:00:00Z",
+  },
+  {
+    id: "col_2",
+    name: "East Africa VC Firms",
+    description: "Venture capital firms investing in East African startups.",
+    category: "custom",
+    itemCount: 4,
+    createdAt: "2026-03-25T07:00:00Z",
+    updatedAt: "2026-04-08T07:00:00Z",
+  },
+  {
+    id: "col_3",
+    name: "Government Procurement Notices — Kenya",
+    description: "Active tenders and procurement opportunities from Kenyan government agencies.",
+    category: "custom",
+    itemCount: 3,
+    createdAt: "2026-04-01T07:00:00Z",
+    updatedAt: "2026-04-09T07:00:00Z",
+  },
+];
+
+export const DUMMY_COLLECTION_ITEMS: CollectionItem[] = [
+  // Kenya Business Finance Directory items
+  {
+    id: "ci_1",
+    collectionId: "col_1",
+    scrapeJobId: "sj_1",
+    data: { company_name: "Stanbic Bank Kenya", founded: "1992", services: "SME Lending", location: "Nairobi", website: "https://stanbicbank.co.ke" },
+    isNew: false,
+    scrapedAt: "2026-04-08T07:00:00Z",
+  },
+  {
+    id: "ci_2",
+    collectionId: "col_1",
+    scrapeJobId: "sj_1",
+    data: { company_name: "Equity Group", founded: "1984", services: "Microfinance", location: "Nairobi", website: "https://equitygroup.com" },
+    isNew: false,
+    scrapedAt: "2026-04-08T07:00:00Z",
+  },
+  {
+    id: "ci_3",
+    collectionId: "col_1",
+    scrapeJobId: "sj_1",
+    data: { company_name: "KCB Group", founded: "1896", services: "Commercial Banking", location: "Nairobi", website: "https://kcbgroup.com" },
+    isNew: true,
+    scrapedAt: "2026-04-09T07:00:00Z",
+  },
+  {
+    id: "ci_4",
+    collectionId: "col_1",
+    scrapeJobId: "sj_1",
+    data: { company_name: "M-Pesa (Safaricom)", founded: "2007", services: "Mobile Money", location: "Nairobi", website: "https://safaricom.co.ke" },
+    isNew: false,
+    scrapedAt: "2026-04-07T07:00:00Z",
+  },
+  {
+    id: "ci_5",
+    collectionId: "col_1",
+    scrapeJobId: "sj_1",
+    data: { company_name: "Branch International", founded: "2015", services: "Digital Lending", location: "Nairobi", website: "https://branch.co" },
+    isNew: true,
+    scrapedAt: "2026-04-09T07:00:00Z",
+  },
+  // East Africa VC Firms items
+  {
+    id: "ci_6",
+    collectionId: "col_2",
+    scrapeJobId: "sj_2",
+    data: { name: "TLcom Capital", focus: "Early stage tech", aum: "$71M", hq: "Nairobi / Lagos" },
+    isNew: false,
+    scrapedAt: "2026-04-07T07:00:00Z",
+  },
+  {
+    id: "ci_7",
+    collectionId: "col_2",
+    scrapeJobId: "sj_2",
+    data: { name: "Novastar Ventures", focus: "Seed to Series A", aum: "$120M", hq: "Nairobi" },
+    isNew: false,
+    scrapedAt: "2026-04-07T07:00:00Z",
+  },
+  {
+    id: "ci_8",
+    collectionId: "col_2",
+    scrapeJobId: "sj_2",
+    data: { name: "DOB Equity", focus: "Growth equity", aum: "$85M", hq: "Nairobi" },
+    isNew: true,
+    scrapedAt: "2026-04-08T07:00:00Z",
+  },
+  {
+    id: "ci_9",
+    collectionId: "col_2",
+    scrapeJobId: "sj_2",
+    data: { name: "Savannah Fund", focus: "Pre-seed to seed", aum: "$25M", hq: "Nairobi" },
+    isNew: false,
+    scrapedAt: "2026-04-06T07:00:00Z",
+  },
+  // Government Procurement items
+  {
+    id: "ci_10",
+    collectionId: "col_3",
+    scrapeJobId: "sj_3",
+    data: { tender_no: "KBC/001/2026", description: "IT Equipment Supply", deadline: "2026-05-01", agency: "Kenya Broadcasting Corporation", value: "KES 15M" },
+    isNew: true,
+    scrapedAt: "2026-04-09T07:00:00Z",
+  },
+  {
+    id: "ci_11",
+    collectionId: "col_3",
+    scrapeJobId: "sj_3",
+    data: { tender_no: "MOH/042/2026", description: "Medical Supplies Procurement", deadline: "2026-04-30", agency: "Ministry of Health", value: "KES 45M" },
+    isNew: false,
+    scrapedAt: "2026-04-08T07:00:00Z",
+  },
+  {
+    id: "ci_12",
+    collectionId: "col_3",
+    scrapeJobId: "sj_3",
+    data: { tender_no: "NCA/018/2026", description: "Construction Materials Testing", deadline: "2026-05-15", agency: "National Construction Authority", value: "KES 8M" },
+    isNew: true,
+    scrapedAt: "2026-04-09T07:00:00Z",
+  },
+];
