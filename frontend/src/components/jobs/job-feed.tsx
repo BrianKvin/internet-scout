@@ -55,8 +55,9 @@ export function JobFeed() {
         ) : jobs && jobs.length > 0 ? (
           jobs.map((job) => <JobCard key={job.id} job={job} />)
         ) : (
-          <div className="px-6 py-12 text-center text-muted-foreground">
-            No jobs found matching your filters.
+          <div className="px-6 py-16 text-center">
+            <p className="text-muted-foreground">No items found matching your filters.</p>
+            <p className="text-xs text-muted-foreground/60 mt-1">Try broadening your search or clearing filters.</p>
           </div>
         )}
       </div>

@@ -68,8 +68,11 @@ export function ActivityFeed() {
           ))}
         </div>
       ) : (
-        <div className="py-12 text-center text-muted-foreground">
-          No scrape runs found{statusFilter !== "all" ? ` with status "${statusFilter}"` : ""}.
+        <div className="py-16 text-center">
+          <p className="text-muted-foreground">
+            No scrape runs found{statusFilter !== "all" ? ` with status "${statusFilter}"` : ""}.
+          </p>
+          <p className="text-xs text-muted-foreground/60 mt-1">Runs appear here after a source is scraped.</p>
         </div>
       )}
     </div>

@@ -75,8 +75,10 @@ export function JobCard({ job }: JobCardProps) {
           onClick={handleSave}
           disabled={saveJobMutation.isPending}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium hover:bg-accent transition-colors disabled:opacity-50",
-            job.savedAt && "text-primary"
+            "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors disabled:opacity-50",
+            job.savedAt
+              ? "bg-primary/10 text-primary hover:bg-primary/20"
+              : "hover:bg-accent"
           )}
         >
           <Bookmark

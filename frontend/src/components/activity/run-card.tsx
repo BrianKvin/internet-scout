@@ -85,19 +85,19 @@ export function RunCard({ run }: RunCardProps) {
 
         <div className="grid grid-cols-3 gap-2 text-center">
           <div className="flex flex-col items-center gap-0.5 rounded-md bg-muted/50 py-1.5">
-            <Database className="h-3.5 w-3.5 text-muted-foreground" />
+            <Database className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-semibold">{run.itemsFound}</span>
-            <span className="text-[10px] text-muted-foreground">found</span>
+            <span className="text-xs text-muted-foreground">found</span>
           </div>
           <div className="flex flex-col items-center gap-0.5 rounded-md bg-muted/50 py-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+            <Sparkles className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-semibold">{run.itemsNew}</span>
-            <span className="text-[10px] text-muted-foreground">new</span>
+            <span className="text-xs text-muted-foreground">new</span>
           </div>
           <div className="flex flex-col items-center gap-0.5 rounded-md bg-muted/50 py-1.5">
-            <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+            <Copy className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-semibold">{run.itemsDeduped}</span>
-            <span className="text-[10px] text-muted-foreground">deduped</span>
+            <span className="text-xs text-muted-foreground">deduped</span>
           </div>
         </div>
 

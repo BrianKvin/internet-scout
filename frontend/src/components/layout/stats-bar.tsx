@@ -49,22 +49,22 @@ export function StatsBar() {
       <StatCard
         label="Items collected"
         value={stats.itemsCollected}
-        sublabel="across all sources"
+        sublabel="total"
       />
       <StatCard
         label="Active sources"
         value={stats.activeSources}
-        sublabel="scraping on schedule"
+        sublabel="enabled"
       />
       <StatCard
         label="Collections"
         value={stats.collections}
-        sublabel="data buckets"
+        sublabel=""
       />
       <StatCard
         label="Scrape runs"
         value={stats.scrapeRuns}
-        sublabel="total executions"
+        sublabel=""
       />
     </div>
   );

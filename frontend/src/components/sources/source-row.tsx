@@ -82,7 +82,7 @@ export function SourceRow({ source }: SourceRowProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-destructive hover:text-destructive"
+          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
           title="Delete source"
           onClick={() => deleteSource.mutate(source.id)}
           disabled={deleteSource.isPending}

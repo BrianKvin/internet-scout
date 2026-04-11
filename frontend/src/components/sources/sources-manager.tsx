@@ -18,7 +18,7 @@ export function SourcesManager() {
         <div>
           <h2 className="text-sm font-medium">Scraper Sources</h2>
           <p className="text-xs text-muted-foreground">
-            Manage the sources Startscout scrapes for jobs and companies.
+            Manage the sources Startscout scrapes across all your targets.
           </p>
         </div>
         <Button size="sm" onClick={() => setFormOpen(true)}>

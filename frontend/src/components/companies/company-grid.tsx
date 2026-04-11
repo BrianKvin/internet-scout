@@ -49,8 +49,9 @@ export function CompanyGrid() {
           ))}
         </div>
       ) : (
-        <div className="py-12 text-center text-muted-foreground">
-          No companies found matching your search.
+        <div className="py-16 text-center">
+          <p className="text-muted-foreground">No companies found matching your search.</p>
+          <p className="text-xs text-muted-foreground/60 mt-1">Companies appear here as sources are scraped.</p>
         </div>
       )}
     </div>
