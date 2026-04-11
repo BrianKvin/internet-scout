@@ -1,14 +1,4 @@
-import type { PipelineStage } from "@/types/pipeline";
 import type { SourceStrategy, SourceType } from "@/types/source";
-
-export const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
-  discovered: "Discovered",
-  researched: "Researched",
-  applied: "Applied",
-  interviewing: "Interviewing",
-  offer: "Offer",
-  rejected: "Rejected",
-};
 
 export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
   job_board: "Job Board",

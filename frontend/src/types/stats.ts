@@ -1,10 +1,10 @@
 import type { SourceHealth } from "./source";
 
 export interface DashboardStats {
-  jobsFound: number;
-  companiesTracked: number;
-  savedRoles: number;
-  appliedActive: number;
+  itemsCollected: number;
+  activeSources: number;
+  collections: number;
+  scrapeRuns: number;
 }
 
 export interface SourcePerformance {
@@ -13,13 +13,4 @@ export interface SourcePerformance {
   itemsPerRun: number[];
   lastRunItems: number;
   healthHistory: SourceHealth[];
-}
-
-export interface FunnelStats {
-  discovered: number;
-  researched: number;
-  applied: number;
-  interviewing: number;
-  offer: number;
-  rejected: number;
 }

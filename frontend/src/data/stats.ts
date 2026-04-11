@@ -1,10 +1,10 @@
-import type { DashboardStats, FunnelStats, SourcePerformance } from "@/types/stats";
+import type { DashboardStats, SourcePerformance } from "@/types/stats";
 
 export const DUMMY_DASHBOARD_STATS: DashboardStats = {
-  jobsFound: 8,
-  companiesTracked: 8,
-  savedRoles: 0,
-  appliedActive: 3,
+  itemsCollected: 117,
+  activeSources: 6,
+  collections: 3,
+  scrapeRuns: 10,
 };
 
 export const DUMMY_SOURCE_PERFORMANCE: SourcePerformance[] = [
@@ -31,11 +31,3 @@ export const DUMMY_SOURCE_PERFORMANCE: SourcePerformance[] = [
   },
 ];
 
-export const DUMMY_FUNNEL_STATS: FunnelStats = {
-  discovered: 8,
-  researched: 5,
-  applied: 3,
-  interviewing: 1,
-  offer: 0,
-  rejected: 0,
-};

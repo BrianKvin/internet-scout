@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsBar } from "@/components/layout/stats-bar";
 import { JobFeed } from "@/components/jobs/job-feed";
 import { CompanyGrid } from "@/components/companies/company-grid";
-import { PipelineBoard } from "@/components/pipeline/pipeline-board";
+import { ActivityFeed } from "@/components/activity/activity-feed";
 import { SourcesManager } from "@/components/sources/sources-manager";
 import { ScrapeStudio } from "@/components/studio/scrape-studio";
 import { CollectionBrowser } from "@/components/collections/collection-browser";
@@ -63,8 +63,8 @@ export default function DashboardPage() {
             <TabsTrigger value="companies" className={tabTriggerClass}>
               Companies
             </TabsTrigger>
-            <TabsTrigger value="pipeline" className={tabTriggerClass}>
-              My pipeline
+            <TabsTrigger value="activity" className={tabTriggerClass}>
+              Activity
             </TabsTrigger>
             <TabsTrigger value="sources" className={tabTriggerClass}>
               Sources
@@ -90,8 +90,8 @@ export default function DashboardPage() {
         <TabsContent value="companies" className="flex-1 mt-0">
           <CompanyGrid />
         </TabsContent>
-        <TabsContent value="pipeline" className="flex-1 mt-0">
-          <PipelineBoard />
+        <TabsContent value="activity" className="flex-1 mt-0">
+          <ActivityFeed />
         </TabsContent>
         <TabsContent value="sources" className="flex-1 mt-0">
           <SourcesManager />

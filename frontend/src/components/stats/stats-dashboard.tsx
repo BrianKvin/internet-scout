@@ -1,16 +1,17 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSourcePerformance, useFunnelStats } from "@/hooks/use-stats";
+import { useSourcePerformance } from "@/hooks/use-stats";
+import { useScrapeRuns } from "@/hooks/use-activity";
 import { SourcePerformance } from "./source-performance";
-import { ApplicationFunnel } from "./application-funnel";
+import { ActivityChart } from "./activity-chart";
 
 export function StatsDashboard() {
   const { data: performance, isLoading: perfLoading } =
     useSourcePerformance();
-  const { data: funnel, isLoading: funnelLoading } = useFunnelStats();
+  const { data: runs, isLoading: runsLoading } = useScrapeRuns();
 
-  if (perfLoading || funnelLoading) {
+  if (perfLoading || runsLoading) {
     return (
       <div className="grid gap-6 p-6 lg:grid-cols-2">
         <div className="rounded-lg border p-6">
@@ -28,7 +29,7 @@ export function StatsDashboard() {
   return (
     <div className="grid gap-6 p-6 lg:grid-cols-2">
       {performance && <SourcePerformance data={performance} />}
-      {funnel && <ApplicationFunnel data={funnel} />}
+      {runs && <ActivityChart data={runs} />}
     </div>
   );
 }

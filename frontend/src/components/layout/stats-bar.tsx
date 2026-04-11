@@ -47,24 +47,24 @@ export function StatsBar() {
   return (
     <div className="flex flex-wrap gap-8 border-b px-6 py-4">
       <StatCard
-        label="Jobs found"
-        value={stats.jobsFound}
-        sublabel="+1 today"
-      />
-      <StatCard
-        label="Companies tracked"
-        value={stats.companiesTracked}
-        sublabel="4 with contacts"
-      />
-      <StatCard
-        label="Saved roles"
-        value={stats.savedRoles}
+        label="Items collected"
+        value={stats.itemsCollected}
         sublabel="across all sources"
       />
       <StatCard
-        label="Applied / active"
-        value={stats.appliedActive}
-        sublabel="in pipeline"
+        label="Active sources"
+        value={stats.activeSources}
+        sublabel="scraping on schedule"
+      />
+      <StatCard
+        label="Collections"
+        value={stats.collections}
+        sublabel="data buckets"
+      />
+      <StatCard
+        label="Scrape runs"
+        value={stats.scrapeRuns}
+        sublabel="total executions"
       />
     </div>
   );

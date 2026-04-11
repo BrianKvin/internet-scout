@@ -267,6 +267,104 @@ Pipeline drag-and-drop (`use-pipeline.ts`) does optimistic updates via TanStack 
 
 ---
 
+## 14. DS/ML Integrations (Free, Local, No API Keys)
+
+**Current state:** Zero DS/ML in the project. All planned AI features (Claude instruction parsing, Voyage AI embeddings) require paid API keys. The concepts below run locally with free Python libraries and plug directly into backend modules being built.
+
+**Dependencies:** `scikit-learn`, `spacy` (small model), `rake-nltk`, `numpy` — all free, all pip-installable.
+
+### 14a. TF-IDF + Cosine Similarity — Deduplication & Search
+
+**Problem:** The `dedupKey` field exists on `Job` and `CollectionItem` types but nothing uses it. Exact string matching misses near-duplicates like "Senior Frontend Engineer" vs "Sr. Frontend Dev" from different sources. Collection search is basic substring matching.
+
+**Implementation:**
+- `scikit-learn`'s `TfidfVectorizer` + `cosine_similarity`
+- Vectorize job titles + descriptions on ingest
+- Flag pairs above 0.85 similarity as duplicates — merge or skip on insert
+- Power ranked search in Collections — return results sorted by TF-IDF relevance instead of substring position
+- ~50 lines of Python, runs in milliseconds for thousands of items
+
+**Where it plugs in:** Data quality layer (item 7) and the `/collections/{id}/items?search=` endpoint.
+
+### 14b. Z-Score Anomaly Detection — Intelligent Source Health
+
+**Problem:** Source health (item 13) is currently planned as a simple success/failure threshold. But a source that normally returns 500 items suddenly returning 50 is broken even if it "succeeds" with HTTP 200.
+
+**Implementation:**
+- Track `items_found` per source per run as a time series in the `scrape_runs` table (item 5)
+- Compute rolling mean and standard deviation over the last 30 runs
+- If today's count is >2 standard deviations below the mean, flag as anomaly
+- Integrate into health scoring: anomaly + success = `warning` (markup may have changed), anomaly + failure = `dead`
+- ~20 lines of numpy, no ML model to train
+
+**Where it plugs in:** Source health dashboard (item 13) and scraper reliability alerts (item 4).
+
+### 14c. Naive Bayes / Logistic Regression — Job Auto-Classification
+
+**Problem:** Jobs must be manually tagged by sector, role type, or seniority. Source metadata is often missing or inconsistent across different sites.
+
+**Implementation:**
+- `scikit-learn`'s `Pipeline(TfidfVectorizer(), LogisticRegression())`
+- Train on your accumulated scraped job data — even 100-200 labeled examples give a usable model
+- Auto-assign sector (Developer Tools, AI/ML, Fintech, etc.) and seniority (Junior, Mid, Senior, Lead) on ingest
+- Retrain periodically as more labeled data accumulates
+- ~10 lines of code, model trains in seconds
+
+**Where it plugs in:** `/jobs` ingest pipeline, powers better filtering in the Job Feed tab.
+
+### 14d. Named Entity Recognition — Structured Data Extraction from Raw Text
+
+**Problem:** The enricher module is designed to find careers pages and guess emails. Scraped pages contain company names, person names, locations, and monetary amounts buried in unstructured text that currently gets ignored.
+
+**Implementation:**
+- `spaCy`'s small English model (`en_core_web_sm`, 12MB download)
+- Extracts ORG, PERSON, GPE (locations), MONEY entities out of the box
+- Feed it a scraped page → get structured entities back
+- Particularly useful for the signals module — auto-extract funding amounts and company names from TechCrunch/HN articles instead of regex patterns
+- Zero training required, works immediately
+
+**Where it plugs in:** Enricher module, signals/news_monitor, and collection item enrichment.
+
+### 14e. DBSCAN Clustering — Company Grouping
+
+**Problem:** Companies scraped from 10+ sources have no automatic grouping. Users can't easily see patterns like "these 12 companies are all Series A fintech in East Africa."
+
+**Implementation:**
+- TF-IDF on company descriptions → DBSCAN clustering (scikit-learn)
+- DBSCAN over K-Means because you don't know the number of clusters upfront
+- Auto-label clusters by most common terms in each group
+- Surface as a "Similar Companies" section on the Companies tab
+
+**Where it plugs in:** Companies tab, potential new `/companies/clusters` endpoint.
+
+### 14f. RAKE — Auto-Tagging via Keyword Extraction
+
+**Problem:** Jobs and collection items have no auto-generated tags. The Job Feed filters are limited to pre-set toggles (remote/new/hot). Users can't filter by technology, skill, or domain.
+
+**Implementation:**
+- RAKE (Rapid Automatic Keyword Extraction) via `rake-nltk`
+- Extract 3-5 most distinctive keywords from each job description or collection item
+- Store as a `tags` array on the item
+- Power dynamic tag filters in Job Feed and Collection detail views
+- Tiny library, no model training, runs in milliseconds
+
+**Where it plugs in:** Job ingest pipeline, collection item ingest, tag filter UI components.
+
+---
+
+### DS/ML Priority
+
+| Priority | Item | Effort | Impact |
+|----------|------|--------|--------|
+| P1 | 14a. TF-IDF dedup + search | ~50 lines | Solves the empty `dedupKey` problem, better search |
+| P1 | 14b. Z-score source health | ~20 lines | Makes health monitoring actually intelligent |
+| P2 | 14f. RAKE auto-tagging | ~30 lines | Unlocks dynamic filtering across all tabs |
+| P2 | 14c. Job classification | ~40 lines | Auto-categorization, needs some labeled data first |
+| P3 | 14d. NER extraction | ~30 lines | Enriches signals + scraped content automatically |
+| P3 | 14e. DBSCAN clustering | ~40 lines | Nice-to-have for company discovery |
+
+---
+
 ## Priority Order
 
 Roughly ordered by impact and dependency:
@@ -286,3 +384,9 @@ Roughly ordered by impact and dependency:
 | P3 | 10. Export + webhooks | Straightforward once backend + collections work |
 | P3 | 13. Source health dashboard | Needs run history data (item 5) first |
 | P3 | 6. Test coverage | Write tests as you build each backend module |
+| P3 | 14a. TF-IDF dedup | Build into data quality layer (item 7) from day one |
+| P3 | 14b. Z-score health | Build into source health (item 13) when run history exists |
+| P4 | 14f. RAKE auto-tagging | After jobs/collections are flowing with real data |
+| P4 | 14c. Job classification | Needs ~100+ labeled jobs to train on |
+| P4 | 14d. NER extraction | After enricher/signals modules exist |
+| P4 | 14e. DBSCAN clustering | After enough companies are scraped |
