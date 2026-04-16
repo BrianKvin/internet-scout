@@ -187,7 +187,7 @@ Import `frontend/` from GitHub, set `NEXT_PUBLIC_API_URL` to your Railway backen
 - [ ] Browser extension — save any page to a collection in one click
 - [ ] Multi-user support + public API
 
-Full technical reference in [`internet-scout.md`](./internet-scout.md).
+Full technical reference in [`docs/internet-scout.md`](./docs/internet-scout.md).
 
 ---
 
@@ -199,6 +199,6 @@ startscout/
 └── frontend/         ← Next.js · dashboard · Scrape Studio · collections
 ```
 
-See [`internet-scout.md`](./internet-scout.md) for the complete file-by-file breakdown, all database schemas, and every code sample.
+See [`docs/internet-scout.md`](./docs/internet-scout.md) for the complete file-by-file breakdown, all database schemas, and every code sample.
 
 ---
