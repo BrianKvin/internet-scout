@@ -4,6 +4,7 @@ import {
   Rss,
   Building2,
   Activity,
+  Compass,
   Globe,
   FlaskConical,
   FolderOpen,
@@ -25,6 +26,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: "feed", label: "Feed", icon: Rss, group: "Data" },
   { id: "companies", label: "Companies", icon: Building2, group: "Data" },
   { id: "activity", label: "Activity", icon: Activity, group: "Data" },
+  { id: "discovery", label: "Discover", icon: Compass, group: "Manage" },
   { id: "sources", label: "Sources", icon: Globe, group: "Manage" },
   { id: "studio", label: "Studio", icon: FlaskConical, group: "Manage" },
   { id: "collections", label: "Collections", icon: FolderOpen, group: "Manage" },
@@ -45,7 +47,12 @@ export function Sidebar({
   collapsed,
   onToggleCollapse,
 }: SidebarProps) {
-  let lastGroup = "";
+  // Pre-compute group header visibility without mutating any variable during render.
+  const navItems = NAV_ITEMS.map((item, index) => {
+    const prevGroup = index > 0 ? NAV_ITEMS[index - 1]?.group : undefined;
+    const showGroup = !collapsed && Boolean(item.group) && item.group !== prevGroup;
+    return { item, showGroup };
+  });
 
   return (
     <aside
@@ -55,11 +62,9 @@ export function Sidebar({
       )}
     >
       <div className="flex-1 flex flex-col gap-1 px-2 py-3">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map(({ item, showGroup }) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
-          const showGroup = !collapsed && item.group && item.group !== lastGroup;
-          if (item.group) lastGroup = item.group;
 
           return (
             <div key={item.id}>

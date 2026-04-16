@@ -6,6 +6,7 @@ import { Radar } from "lucide-react";
 
 export function PublicNav() {
   const { isAuthenticated } = useAuth();
+  const ctaHref = isAuthenticated ? "/dashboard" : "/sign-up";
 
   return (
     <header className="border-b bg-white">
@@ -32,7 +33,7 @@ export function PublicNav() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard"
+            href={ctaHref}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             {isAuthenticated ? "Dashboard" : "Get Started"}

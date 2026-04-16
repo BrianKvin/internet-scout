@@ -13,6 +13,9 @@ const SIGNAL_STYLES: Record<string, string> = {
   news: "bg-blue-100 text-blue-800",
   hiring_surge: "bg-orange-100 text-orange-800",
   github_activity: "bg-purple-100 text-purple-800",
+  regulatory_change: "bg-yellow-100 text-yellow-800",
+  environmental_alert: "bg-emerald-100 text-emerald-800",
+  tender_deadline: "bg-sky-100 text-sky-800",
 };
 
 const SIGNAL_LABELS: Record<string, string> = {
@@ -20,6 +23,9 @@ const SIGNAL_LABELS: Record<string, string> = {
   news: "News",
   hiring_surge: "Hiring",
   github_activity: "GitHub",
+  regulatory_change: "Regulatory",
+  environmental_alert: "Environment",
+  tender_deadline: "Tender",
 };
 
 export function SignalBadge({ signal }: SignalBadgeProps) {

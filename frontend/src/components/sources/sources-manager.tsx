@@ -18,7 +18,8 @@ export function SourcesManager() {
         <div>
           <h2 className="text-sm font-medium">Scraper Sources</h2>
           <p className="text-xs text-muted-foreground">
-            Manage the sources Startscout scrapes across all your targets.
+            Registry of sites to scrape. Click "Configure" to create a scrape
+            job in Studio with keywords and a target collection.
           </p>
         </div>
         <Button size="sm" onClick={() => setFormOpen(true)}>
@@ -44,7 +45,8 @@ export function SourcesManager() {
         ))
       ) : (
         <div className="px-6 py-12 text-center text-muted-foreground">
-          No sources configured yet. Add one to get started.
+          No sources configured yet. Add one to get started, then configure a
+          scrape job in Studio.
         </div>
       )}
 

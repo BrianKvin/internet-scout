@@ -1,14 +1,14 @@
 "use client";
 
-import { Play, Trash2, ExternalLink } from "lucide-react";
+import { Trash2, ExternalLink, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
   useToggleSource,
   useDeleteSource,
-  useScrapeSource,
 } from "@/hooks/use-sources";
+import { useDashboardNav } from "@/hooks/use-dashboard-nav";
 import { HealthIndicator } from "./health-indicator";
 import { SOURCE_STRATEGY_LABELS, SOURCE_TYPE_LABELS } from "@/lib/constants";
 import type { Source } from "@/types/source";
@@ -20,7 +20,11 @@ interface SourceRowProps {
 export function SourceRow({ source }: SourceRowProps) {
   const toggleSource = useToggleSource();
   const deleteSource = useDeleteSource();
-  const scrapeSource = useScrapeSource();
+  const { navigate } = useDashboardNav();
+
+  const handleConfigureInStudio = () => {
+    navigate("studio", { sourceId: source.id, sourceName: source.name });
+  };
 
   const lastScrapedLabel = source.lastScraped
     ? new Date(source.lastScraped).toLocaleDateString("en-US", {
@@ -56,20 +60,20 @@ export function SourceRow({ source }: SourceRowProps) {
       </div>
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
-        <span>{source.jobCount} items</span>
+        <span>{source.itemCount} items</span>
         <span>Last: {lastScrapedLabel}</span>
       </div>
 
       <div className="flex items-center gap-1 shrink-0">
         <Button
           variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          title="Scrape now"
-          onClick={() => scrapeSource.mutate(source.id)}
-          disabled={scrapeSource.isPending || !source.enabled}
+          size="sm"
+          className="h-8 text-xs"
+          title="Create scrape job in Studio"
+          onClick={handleConfigureInStudio}
         >
-          <Play className="h-4 w-4" />
+          <FlaskConical className="h-3.5 w-3.5 mr-1" />
+          Configure
         </Button>
         <a
           href={source.url}

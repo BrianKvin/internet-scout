@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Radar, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
+import { ApiError } from "@/services/api";
 
 const signUpSchema = z
   .object({
@@ -26,6 +27,7 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 export default function SignUpPage() {
   const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -36,8 +38,17 @@ export default function SignUpPage() {
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSubmit = (data: SignUpValues) => {
-    signUp(data.name, data.email, data.password);
+  const onSubmit = async (data: SignUpValues) => {
+    setSubmitError(null);
+    try {
+      await signUp(data.name, data.email, data.password);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError("Sign up failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -139,6 +150,10 @@ export default function SignUpPage() {
                 </p>
               )}
             </div>
+
+            {submitError && (
+              <p className="text-xs text-destructive">{submitError}</p>
+            )}
 
             <button
               type="submit"

@@ -1,16 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCollections } from "@/hooks/use-collections";
 import { CollectionCard } from "./collection-card";
 import { CollectionDetail } from "./collection-detail";
 import type { Collection } from "@/types/collection";
 
-export function CollectionBrowser() {
+interface CollectionBrowserProps {
+  navData?: Record<string, string>;
+}
+
+export function CollectionBrowser({ navData }: CollectionBrowserProps) {
   const { data: collections, isLoading } = useCollections();
   const [selectedCollection, setSelectedCollection] =
     useState<Collection | null>(null);
+
+  // Auto-open a collection if navigated here with collectionId
+  useEffect(() => {
+    const targetId = navData?.collectionId;
+    if (targetId && collections) {
+      const found = collections.find((c) => c.id === targetId);
+      if (found) {
+        setSelectedCollection(found);
+      }
+    }
+  }, [navData?.collectionId, collections]);
 
   if (selectedCollection) {
     return (
@@ -26,7 +41,8 @@ export function CollectionBrowser() {
       <div>
         <h2 className="text-sm font-medium">Collections</h2>
         <p className="text-xs text-muted-foreground">
-          Browse all data collections created from scrape jobs.
+          Browse all data collections created from scrape jobs. Click a
+          collection to view, search, and export its items.
         </p>
       </div>
 
@@ -55,7 +71,7 @@ export function CollectionBrowser() {
         </div>
       ) : (
         <div className="py-12 text-center text-muted-foreground">
-          No collections yet. Create one from the Studio tab.
+          No collections yet. Scrape a source and results will appear here.
         </div>
       )}
     </div>

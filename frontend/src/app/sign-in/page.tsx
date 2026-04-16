@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Radar, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
+import { ApiError } from "@/services/api";
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -19,6 +20,7 @@ type SignInValues = z.infer<typeof signInSchema>;
 export default function SignInPage() {
   const { signIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -29,8 +31,17 @@ export default function SignInPage() {
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: SignInValues) => {
-    signIn(data.email, data.password);
+  const onSubmit = async (data: SignInValues) => {
+    setSubmitError(null);
+    try {
+      await signIn(data.email, data.password);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError("Sign in failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -98,6 +109,10 @@ export default function SignInPage() {
                 </p>
               )}
             </div>
+
+            {submitError && (
+              <p className="text-xs text-destructive">{submitError}</p>
+            )}
 
             <button
               type="submit"

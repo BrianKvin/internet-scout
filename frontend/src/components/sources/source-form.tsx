@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,20 +23,16 @@ import { useAddSource } from "@/hooks/use-sources";
 import {
   SOURCE_TYPE_LABELS,
   SOURCE_STRATEGY_LABELS,
+  STRATEGY_BY_TYPE,
 } from "@/lib/constants";
+import { SOURCE_TYPES, SOURCE_STRATEGIES } from "@/types/source";
 import type { SourceStrategy, SourceType } from "@/types/source";
 
 const sourceSchema = z.object({
   name: z.string().min(1, "Name is required"),
   url: z.string().url("Must be a valid URL"),
-  type: z.enum(["job_board", "vc_portfolio"] as const),
-  strategy: z.enum([
-    "yc",
-    "generic_jobs",
-    "generic_portfolio",
-    "playwright_portfolio",
-    "hn_hiring",
-  ] as const),
+  type: z.enum(SOURCE_TYPES),
+  strategy: z.enum(SOURCE_STRATEGIES),
 });
 
 type SourceFormValues = z.infer<typeof sourceSchema>;
@@ -60,13 +57,22 @@ export function SourceForm({ open, onOpenChange }: SourceFormProps) {
     defaultValues: {
       name: "",
       url: "",
-      type: "job_board",
-      strategy: "generic_jobs",
+      type: "custom",
+      strategy: "generic_list",
     },
   });
 
   const currentType = watch("type");
   const currentStrategy = watch("strategy");
+
+  useEffect(() => {
+    const validStrategies = STRATEGY_BY_TYPE[currentType];
+    if (!validStrategies.includes(currentStrategy) && validStrategies.length > 0) {
+      setValue("strategy", validStrategies[0]!);
+    }
+  }, [currentType, currentStrategy, setValue]);
+
+  const availableStrategies = STRATEGY_BY_TYPE[currentType];
 
   const onSubmit = (data: SourceFormValues) => {
     addSource.mutate(data, {
@@ -90,7 +96,7 @@ export function SourceForm({ open, onOpenChange }: SourceFormProps) {
             </label>
             <Input
               id="source-name"
-              placeholder="e.g. Y Combinator"
+              placeholder="e.g. NEMA Kenya"
               {...register("name")}
             />
             {errors.name && (
@@ -147,14 +153,9 @@ export function SourceForm({ open, onOpenChange }: SourceFormProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(
-                  Object.entries(SOURCE_STRATEGY_LABELS) as [
-                    SourceStrategy,
-                    string,
-                  ][]
-                ).map(([val, label]) => (
-                  <SelectItem key={val} value={val}>
-                    {label}
+                {availableStrategies.map((strategyKey) => (
+                  <SelectItem key={strategyKey} value={strategyKey}>
+                    {SOURCE_STRATEGY_LABELS[strategyKey]}
                   </SelectItem>
                 ))}
               </SelectContent>

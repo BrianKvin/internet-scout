@@ -45,7 +45,7 @@ function HeroSection() {
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/dashboard"
+              href="/sign-up"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Get Started Free
@@ -74,10 +74,10 @@ function HeroSection() {
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-4">
               {[
-                { label: "Jobs found", value: "142" },
-                { label: "Companies", value: "38" },
-                { label: "Saved roles", value: "12" },
-                { label: "In pipeline", value: "7" },
+                { label: "Items collected", value: "32" },
+                { label: "Active sources", value: "10" },
+                { label: "Collections", value: "7" },
+                { label: "Scrape runs", value: "21" },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -93,33 +93,33 @@ function HeroSection() {
             <div className="mt-3 space-y-2">
               {[
                 {
-                  title: "Senior Frontend Engineer",
-                  company: "Vectral",
-                  tag: "YC",
+                  title: "KBC IT Equipment Supply — KES 15M",
+                  company: "PPRA Tenders",
+                  tag: "GOV",
                 },
                 {
-                  title: "ML Engineer",
-                  company: "Cohere AI",
-                  tag: "YC",
+                  title: "Air Quality Advisory — Nairobi",
+                  company: "NEMA Kenya",
+                  tag: "ENV",
                 },
                 {
-                  title: "Staff Engineer",
-                  company: "Retool",
-                  tag: "PEAR",
+                  title: "CBK Holds Base Rate at 10%",
+                  company: "Business Daily",
+                  tag: "NEWS",
                 },
-              ].map((job) => (
+              ].map((item) => (
                 <div
-                  key={job.title}
+                  key={item.title}
                   className="flex items-center justify-between rounded-md bg-background px-4 py-2.5"
                 >
                   <div>
-                    <span className="text-sm font-medium">{job.title}</span>
+                    <span className="text-sm font-medium">{item.title}</span>
                     <span className="ml-2 text-xs text-muted-foreground">
-                      {job.company}
+                      {item.company}
                     </span>
                   </div>
                   <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
-                    {job.tag}
+                    {item.tag}
                   </span>
                 </div>
               ))}
@@ -261,9 +261,9 @@ function FeaturesSection() {
 function UseCasesSection() {
   const useCases = [
     {
-      title: "Startup Job Hunting",
+      title: "Environmental Monitoring",
       description:
-        "Track roles across Y Combinator, Sequoia, Pear VC, and more. Get notified before jobs hit LinkedIn. Built-in pipeline kanban to track applications.",
+        "Track EIA reports, air quality advisories, and compliance notices from NEMA, UNEP, and national agencies. Get alerted on regulatory changes affecting your sector.",
     },
     {
       title: "Business Directories",
@@ -276,9 +276,9 @@ function UseCasesSection() {
         "Monitor tender notices from government agencies. Get alerted when new procurement opportunities match your sector and value range.",
     },
     {
-      title: "Market Research",
+      title: "Financial Intelligence",
       description:
-        "Track competitor portfolios, pricing pages, or product catalogs. Export structured data for analysis and reporting.",
+        "Monitor central bank circulars, forex rates, securities filings, and market data. Track regulatory changes across banking, insurance, and fintech sectors.",
     },
   ];
 
@@ -396,14 +396,14 @@ function CTASection() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/dashboard"
+              href="/sign-up"
               className="inline-flex items-center gap-2 rounded-lg bg-background px-6 py-3 text-sm font-medium text-foreground hover:bg-background/90 transition-colors"
             >
               Create Free Account
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/dashboard"
+              href="/sign-in"
               className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
             >
               Sign In
