@@ -1,51 +1,91 @@
-import { DUMMY_SOURCES } from "@/data/sources";
+import { request } from "@/services/api";
+import { mapSource, type ApiSource } from "@/services/mappers";
 import type { Source, SourceCreate } from "@/types/source";
 
 export async function getSources(): Promise<Source[]> {
-  return [...DUMMY_SOURCES];
+  let rows = await request<ApiSource[]>("/sources/");
+
+  // Preserve default source injection behavior on first load.
+  if (rows.length === 0) {
+    await request<{ seeded: boolean }>("/sources/seed", { method: "POST" });
+    rows = await request<ApiSource[]>("/sources/");
+  }
+
+  return rows.map(mapSource);
 }
 
 export async function addSource(body: SourceCreate): Promise<Source> {
-  const newSource: Source = {
-    id: `src_${Date.now()}`,
-    name: body.name,
-    url: body.url,
-    type: body.type,
-    strategy: body.strategy,
-    enabled: true,
-    lastScraped: null,
-    jobCount: 0,
-    health: "ok",
-    notes: null,
-  };
-  DUMMY_SOURCES.push(newSource);
-  return { ...newSource };
+  const row = await request<ApiSource>("/sources/", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+  return mapSource(row);
 }
 
 export async function toggleSource(id: string): Promise<Source> {
-  const source = DUMMY_SOURCES.find((s) => s.id === id);
-  if (!source) {
-    throw new Error(`Source not found: ${id}`);
-  }
-  source.enabled = !source.enabled;
-  return { ...source };
+  const row = await request<ApiSource>(`/sources/${id}/toggle`, {
+    method: "PATCH",
+  });
+  return mapSource(row);
 }
 
 export async function deleteSource(id: string): Promise<void> {
-  const index = DUMMY_SOURCES.findIndex((s) => s.id === id);
-  if (index === -1) {
-    throw new Error(`Source not found: ${id}`);
-  }
-  DUMMY_SOURCES.splice(index, 1);
+  await request<void>(`/sources/${id}`, {
+    method: "DELETE",
+  });
 }
 
-export async function scrapeSource(id: string): Promise<{ scraped: number }> {
-  const source = DUMMY_SOURCES.find((s) => s.id === id);
-  if (!source) {
-    throw new Error(`Source not found: ${id}`);
-  }
-  source.lastScraped = new Date().toISOString();
-  const count = Math.floor(Math.random() * 10) + 1;
-  source.jobCount += count;
-  return { scraped: count };
+export interface ScrapeSourceResult {
+  scraped: number;
+  found: number;
+  collectionId: string | null;
+}
+
+export async function scrapeSource(id: string): Promise<ScrapeSourceResult> {
+  const result = await request<{
+    found?: number;
+    new?: number;
+    collection_id?: string;
+    collection_items_added?: number;
+  }>(`/scrape/${id}`, {
+    method: "POST",
+  });
+  return {
+    scraped: result.new ?? result.found ?? 0,
+    found: result.found ?? 0,
+    collectionId: result.collection_id ?? null,
+  };
+}
+
+type ScrapeAllResult = {
+  source_id: string;
+  found?: number;
+  new?: number;
+  dupes?: number;
+  error?: string;
+};
+
+export async function scrapeAllSources(): Promise<{
+  total: number;
+  success: number;
+  failed: number;
+  newItems: number;
+  results: ScrapeAllResult[];
+}> {
+  const payload = await request<{ results: ScrapeAllResult[] }>("/scrape/all/run", {
+    method: "POST",
+  });
+
+  const results = payload.results ?? [];
+  const failed = results.filter((r) => Boolean(r.error)).length;
+  const success = results.length - failed;
+  const newItems = results.reduce((sum, r) => sum + (r.new ?? r.found ?? 0), 0);
+
+  return {
+    total: results.length,
+    success,
+    failed,
+    newItems,
+    results,
+  };
 }

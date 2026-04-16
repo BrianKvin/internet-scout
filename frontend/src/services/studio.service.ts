@@ -1,55 +1,75 @@
-import { DUMMY_SCRAPE_JOBS } from "@/data/scrape-jobs";
-import { DUMMY_COLLECTIONS } from "@/data/collections";
+import { request } from "@/services/api";
+import { mapScrapeJob, type ApiScrapeJob } from "@/services/mappers";
 import type { ScrapeJob, ScrapeJobCreate } from "@/types/scrape-job";
-import type { Collection } from "@/types/collection";
 
 export async function getScrapeJobs(): Promise<ScrapeJob[]> {
-  return [...DUMMY_SCRAPE_JOBS];
+  const rows = await request<ApiScrapeJob[]>("/studio/");
+  return rows.map(mapScrapeJob);
+}
+
+export interface PreviewResult {
+  items: Record<string, string | number | boolean | null>[];
+  filtered: number;
+  total: number;
 }
 
 export async function previewScrape(
-  _url: string,
-  _strategy: string
-): Promise<Record<string, string | number | boolean | null>[]> {
-  // Return dummy preview data
-  return [
-    { name: "Example Item 1", category: "Finance", location: "Nairobi" },
-    { name: "Example Item 2", category: "Technology", location: "Lagos" },
-    { name: "Example Item 3", category: "Agriculture", location: "Kampala" },
-    { name: "Example Item 4", category: "Healthcare", location: "Dar es Salaam" },
-    { name: "Example Item 5", category: "Education", location: "Kigali" },
-  ];
+  url: string,
+  strategy: string,
+  keywords: string = "",
+): Promise<PreviewResult> {
+  const params = new URLSearchParams({
+    url,
+    strategy,
+    limit: "10",
+  });
+  if (keywords) params.set("keywords", keywords);
+
+  return request<PreviewResult>(`/studio/preview?${params.toString()}`, {
+    method: "POST",
+  });
+}
+
+export interface RunJobResult {
+  scraped: number;
+  items: Record<string, string | number | boolean | null>[];
+  collectionId: string | null;
+  companiesAdded: number;
+}
+
+export async function runScrapeJob(jobId: string): Promise<RunJobResult> {
+  const result = await request<{
+    scraped: number;
+    items: Record<string, string | number | boolean | null>[];
+    collection_id: string | null;
+    companies_added: number;
+  }>(`/studio/${jobId}/run`, { method: "POST" });
+
+  return {
+    scraped: result.scraped,
+    items: result.items,
+    collectionId: result.collection_id,
+    companiesAdded: result.companies_added,
+  };
 }
 
 export async function createScrapeJob(
   body: ScrapeJobCreate
 ): Promise<ScrapeJob> {
-  const collectionId = `col_${Date.now()}`;
-  const newCollection: Collection = {
-    id: collectionId,
-    name: body.collectionName,
-    description: null,
-    category: "custom",
-    itemCount: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  DUMMY_COLLECTIONS.push(newCollection);
+  const row = await request<ApiScrapeJob>("/studio/", {
+    method: "POST",
+    body: JSON.stringify({
+      name: body.name,
+      source_id: body.sourceId,
+      url: body.url,
+      instructions: body.instructions,
+      keywords: body.keywords,
+      collection_id: body.collectionId,
+      collection_name: body.newCollectionName,
+      schedule: body.schedule,
+      notify: body.notify,
+    }),
+  });
 
-  const newJob: ScrapeJob = {
-    id: `sj_${Date.now()}`,
-    name: body.name,
-    url: body.url,
-    instructions: body.instructions,
-    config: {},
-    collectionId,
-    schedule: body.schedule,
-    notify: body.notify,
-    lastRun: null,
-    lastCount: 0,
-    health: "ok",
-    createdAt: new Date().toISOString(),
-  };
-  DUMMY_SCRAPE_JOBS.push(newJob);
-  return { ...newJob };
+  return mapScrapeJob(row);
 }

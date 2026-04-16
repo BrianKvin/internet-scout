@@ -1,15 +1,15 @@
-import { DUMMY_NOTIFICATION_SETTINGS } from "@/data/notifications";
+import { request } from "@/services/api";
 import type { NotificationSettings } from "@/types/notification";
 
-let settings = { ...DUMMY_NOTIFICATION_SETTINGS };
-
 export async function getNotificationSettings(): Promise<NotificationSettings> {
-  return { ...settings };
+  return request<NotificationSettings>("/notify/settings");
 }
 
 export async function updateNotificationSettings(
   updates: Partial<NotificationSettings>
 ): Promise<NotificationSettings> {
-  settings = { ...settings, ...updates };
-  return { ...settings };
+  return request<NotificationSettings>("/notify/settings", {
+    method: "PATCH",
+    body: JSON.stringify(updates),
+  });
 }

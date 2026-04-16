@@ -1,13 +1,18 @@
+import { request } from "@/services/api";
 import {
-  DUMMY_DASHBOARD_STATS,
-  DUMMY_SOURCE_PERFORMANCE,
-} from "@/data/stats";
+  mapDashboardStats,
+  mapSourcePerformance,
+  type ApiDashboardStats,
+  type ApiSourcePerformance,
+} from "@/services/mappers";
 import type { DashboardStats, SourcePerformance } from "@/types/stats";
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  return { ...DUMMY_DASHBOARD_STATS };
+  const row = await request<ApiDashboardStats>("/stats/dashboard");
+  return mapDashboardStats(row);
 }
 
 export async function getSourcePerformance(): Promise<SourcePerformance[]> {
-  return [...DUMMY_SOURCE_PERFORMANCE];
+  const rows = await request<ApiSourcePerformance[]>("/stats/source-performance");
+  return rows.map(mapSourcePerformance);
 }

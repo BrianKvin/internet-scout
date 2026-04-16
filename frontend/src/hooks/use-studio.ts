@@ -3,6 +3,7 @@ import {
   getScrapeJobs,
   previewScrape,
   createScrapeJob,
+  runScrapeJob,
 } from "@/services/studio.service";
 import type { ScrapeJobCreate } from "@/types/scrape-job";
 
@@ -15,8 +16,15 @@ export function useScrapeJobs() {
 
 export function usePreviewScrape() {
   return useMutation({
-    mutationFn: ({ url, strategy }: { url: string; strategy: string }) =>
-      previewScrape(url, strategy),
+    mutationFn: ({
+      url,
+      strategy,
+      keywords,
+    }: {
+      url: string;
+      strategy: string;
+      keywords?: string;
+    }) => previewScrape(url, strategy, keywords),
   });
 }
 
@@ -27,6 +35,21 @@ export function useCreateScrapeJob() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["scrape-jobs"] });
       void queryClient.invalidateQueries({ queryKey: ["collections"] });
+    },
+  });
+}
+
+export function useRunScrapeJob() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (jobId: string) => runScrapeJob(jobId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["scrape-jobs"] });
+      void queryClient.invalidateQueries({ queryKey: ["collections"] });
+      void queryClient.invalidateQueries({ queryKey: ["companies"] });
+      void queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      void queryClient.invalidateQueries({ queryKey: ["stats"] });
+      void queryClient.invalidateQueries({ queryKey: ["activity", "runs"] });
     },
   });
 }

@@ -1,8 +1,15 @@
-import { DUMMY_COLLECTIONS, DUMMY_COLLECTION_ITEMS } from "@/data/collections";
+import { request } from "@/services/api";
+import {
+  mapCollection,
+  mapCollectionItem,
+  type ApiCollection,
+  type ApiCollectionItem,
+} from "@/services/mappers";
 import type { Collection, CollectionItem } from "@/types/collection";
 
 export async function getCollections(): Promise<Collection[]> {
-  return [...DUMMY_COLLECTIONS];
+  const rows = await request<ApiCollection[]>("/collections/");
+  return rows.map(mapCollection);
 }
 
 export interface CollectionItemsResult {
@@ -12,37 +19,39 @@ export interface CollectionItemsResult {
   pageSize: number;
 }
 
+interface ApiCollectionItemsResult {
+  items: ApiCollectionItem[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 export async function getCollectionItems(
   collectionId: string,
   options?: { search?: string; page?: number; pageSize?: number }
 ): Promise<CollectionItemsResult> {
-  const page = options?.page ?? 1;
-  const pageSize = options?.pageSize ?? 50;
+  const params = new URLSearchParams();
+  if (options?.search) params.set("search", options.search);
+  params.set("page", String(options?.page ?? 1));
+  params.set("limit", String(options?.pageSize ?? 50));
 
-  let items = DUMMY_COLLECTION_ITEMS.filter(
-    (i) => i.collectionId === collectionId
+  const data = await request<ApiCollectionItemsResult>(
+    `/collections/${collectionId}/items?${params.toString()}`
   );
 
-  if (options?.search) {
-    const q = options.search.toLowerCase();
-    items = items.filter((item) =>
-      Object.values(item.data).some(
-        (val) => typeof val === "string" && val.toLowerCase().includes(q)
-      )
-    );
-  }
-
-  const total = items.length;
-  const start = (page - 1) * pageSize;
-  const paged = items.slice(start, start + pageSize);
-
-  return { items: paged, total, page, pageSize };
+  return {
+    items: data.items.map(mapCollectionItem),
+    total: data.total,
+    page: data.page,
+    pageSize: data.page_size,
+  };
 }
 
 export async function getCollectionItemsForExport(
   collectionId: string
 ): Promise<CollectionItem[]> {
-  return DUMMY_COLLECTION_ITEMS.filter(
-    (i) => i.collectionId === collectionId
+  const data = await request<ApiCollectionItemsResult>(
+    `/collections/${collectionId}/items?page=1&limit=10000`
   );
+  return data.items.map(mapCollectionItem);
 }

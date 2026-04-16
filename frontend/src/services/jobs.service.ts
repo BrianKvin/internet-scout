@@ -1,47 +1,26 @@
-import { DUMMY_JOBS } from "@/data/jobs";
+import { request } from "@/services/api";
+import { mapJob, type ApiJob } from "@/services/mappers";
 import type { Job, JobFilters } from "@/types/job";
 
 export async function getJobs(filters?: JobFilters): Promise<Job[]> {
-  let jobs = [...DUMMY_JOBS];
+  const params = new URLSearchParams();
+  if (filters?.search) params.set("search", filters.search);
+  if (filters?.source && filters.source !== "all") params.set("source_id", filters.source);
+  if (filters?.tags?.includes("remote")) params.set("is_remote", "true");
+  if (filters?.tags?.includes("new")) params.set("is_new", "true");
 
-  if (filters?.search) {
-    const q = filters.search.toLowerCase();
-    jobs = jobs.filter(
-      (j) =>
-        j.title.toLowerCase().includes(q) ||
-        j.company.toLowerCase().includes(q)
-    );
-  }
+  const query = params.toString();
+  const rows = await request<ApiJob[]>(`/jobs/${query ? `?${query}` : ""}`);
+  let jobs = rows.map(mapJob);
 
-  if (filters?.source && filters.source !== "all") {
-    jobs = jobs.filter((j) => j.sourceId === filters.source);
-  }
-
-  if (filters?.tags && filters.tags.length > 0) {
-    jobs = jobs.filter((j) => {
-      return filters.tags!.every((tag) => {
-        switch (tag) {
-          case "remote":
-            return j.isRemote;
-          case "new":
-            return j.isNew;
-          case "hot":
-            return j.savedAt !== null;
-          default:
-            return true;
-        }
-      });
-    });
+  if (filters?.tags?.includes("hot")) {
+    jobs = jobs.filter((job) => job.savedAt !== null);
   }
 
   return jobs;
 }
 
 export async function saveJob(id: string): Promise<Job> {
-  const job = DUMMY_JOBS.find((j) => j.id === id);
-  if (!job) {
-    throw new Error(`Job not found: ${id}`);
-  }
-  job.savedAt = job.savedAt ? null : new Date().toISOString();
-  return { ...job };
+  const row = await request<ApiJob>(`/jobs/${id}/save`, { method: "PATCH" });
+  return mapJob(row);
 }

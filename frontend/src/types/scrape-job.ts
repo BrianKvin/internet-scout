@@ -3,8 +3,10 @@ import type { SourceHealth } from "./source";
 export interface ScrapeJob {
   id: string;
   name: string;
+  sourceId: string | null;
   url: string;
   instructions: string;
+  keywords: string[];
   config: Record<string, string | number | boolean | null>;
   collectionId: string;
   schedule: "daily" | "weekly" | "manual";
@@ -17,9 +19,12 @@ export interface ScrapeJob {
 
 export interface ScrapeJobCreate {
   name: string;
+  sourceId: string | null;
   url: string;
   instructions: string;
-  collectionName: string;
+  keywords: string[];
+  collectionId: string | null;
+  newCollectionName: string | null;
   schedule: "daily" | "weekly" | "manual";
   notify: boolean;
 }

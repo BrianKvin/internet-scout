@@ -5,6 +5,7 @@ import {
   toggleSource,
   deleteSource,
   scrapeSource,
+  scrapeAllSources,
 } from "@/services/sources.service";
 import type { SourceCreate } from "@/types/source";
 
@@ -52,7 +53,26 @@ export function useScrapeSource() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["sources"] });
       void queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      void queryClient.invalidateQueries({ queryKey: ["companies"] });
+      void queryClient.invalidateQueries({ queryKey: ["collections"] });
       void queryClient.invalidateQueries({ queryKey: ["stats"] });
+      void queryClient.invalidateQueries({ queryKey: ["activity", "runs"] });
+      void queryClient.invalidateQueries({ queryKey: ["activity", "stats"] });
+    },
+  });
+}
+
+export function useScrapeAllSources() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: scrapeAllSources,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["sources"] });
+      void queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      void queryClient.invalidateQueries({ queryKey: ["companies"] });
+      void queryClient.invalidateQueries({ queryKey: ["stats"] });
+      void queryClient.invalidateQueries({ queryKey: ["activity", "runs"] });
+      void queryClient.invalidateQueries({ queryKey: ["activity", "stats"] });
     },
   });
 }
